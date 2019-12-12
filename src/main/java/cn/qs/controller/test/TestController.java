@@ -19,14 +19,27 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import cn.qs.utils.JSONResultUtil;
-import cn.qs.utils.web.WebUtils;
 
 @RequestMapping("/test")
 @RestController
 public class TestController {
 
+	@PostMapping("/test")
+	public JSONResultUtil<String> Test(@RequestBody String condition) {
+		System.out.println(condition);
+
+		return new JSONResultUtil<String>(false, null, "error");
+	}
+
 	@GetMapping("/get")
-	public Map<String, Object> get(@RequestParam Map<String, Object> condition) {
+	public Map<String, Object> get(@RequestParam Map<String, Object> condition, HttpServletRequest request) {
+		Enumeration<String> headerNames = request.getHeaderNames();
+		while (headerNames.hasMoreElements()) {
+			String header = (String) headerNames.nextElement();
+			String value = request.getHeader(header);
+			System.out.println(header + "\t" + value);
+		}
+
 		if (MapUtils.isEmpty(condition)) {
 			condition = new LinkedHashMap<>();
 			condition.put("param", null);
@@ -45,8 +58,15 @@ public class TestController {
 	public String getCookie(@CookieValue(value = "cookie1", required = false) String cookie,
 			HttpServletRequest request) {
 
-		String header = request.getHeader("X-HEADER1");
-		System.out.println(header);
+		System.out.println("cookie1: " + cookie);
+		System.out.println("=====================");
+
+		Enumeration<String> headerNames = request.getHeaderNames();
+		while (headerNames.hasMoreElements()) {
+			String header = (String) headerNames.nextElement();
+			String value = request.getHeader(header);
+			System.out.println(header + "\t" + value);
+		}
 
 		return cookie;
 	}
@@ -55,10 +75,15 @@ public class TestController {
 	public String setCookie(HttpServletRequest request, HttpServletResponse response) {
 		Cookie cookie2 = new Cookie("cookie1", "value1");
 		cookie2.setPath("/");
+		cookie2.setHttpOnly(true);
+		cookie2.setSecure(true);
 		response.addCookie(cookie2);
 
-		String cookie = "cookie1=value1";
-		return cookie;
+		Cookie cookie3 = new Cookie("cookie2", "value2");
+		cookie3.setPath("/");
+		response.addCookie(cookie3);
+
+		return "";
 	}
 
 	@GetMapping("/getHeader")

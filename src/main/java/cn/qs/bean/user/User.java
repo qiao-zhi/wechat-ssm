@@ -27,7 +27,6 @@ public class User extends AbstractSequenceEntity {
 
 	private String userblank;
 
-	// 头像URL
 	private String photo;
 
 	public String getUsername() {

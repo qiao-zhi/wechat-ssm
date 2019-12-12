@@ -3,13 +3,13 @@ package cn.qs.controller.system;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import com.alibaba.fastjson.JSONObject;
 
 import cn.qs.bean.user.User;
 import cn.qs.service.user.UserService;
@@ -24,6 +24,8 @@ import cn.qs.utils.system.SystemUtils;
  */
 @Controller
 public class LoginController {
+
+	private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
 	@Autowired
 	private UserService userService;
@@ -70,17 +72,15 @@ public class LoginController {
 	 */
 	@RequestMapping("doLoginJSON")
 	@ResponseBody
-	public JSONResultUtil<Object> doLoginJSON(@RequestBody User user, HttpSession session) {
+	public JSONResultUtil doLoginJSON(@RequestBody User user, HttpSession session, HttpServletRequest request) {
 		User loginUser = userService.getUserByUserNameAndPassword(user.getUsername(), user.getPassword());
-
+		logger.debug("loginUser: {}", loginUser);
 		if (loginUser == null) {
 			return JSONResultUtil.error("账号或者密码错误");
 		}
 
 		session.setAttribute("user", loginUser);
-
-		String useStr = JSONObject.toJSONString(loginUser);
-		return new JSONResultUtil<Object>(true, useStr, "登陆成功");
+		return new JSONResultUtil<User>(true, "登录成功", loginUser);
 	}
 
 }

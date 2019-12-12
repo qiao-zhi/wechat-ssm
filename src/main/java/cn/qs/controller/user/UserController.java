@@ -79,10 +79,13 @@ public class UserController extends AbstractSequenceController<User> {
 			return JSONResultUtil.error("用户已经存在");
 		}
 
-		user.setPassword(MD5Utils.md5(user.getPassword()));// md5加密密码
+		// md5加密密码
+		user.setPassword(MD5Utils.md5(user.getPassword()));
 		if (StringUtils.isBlank(user.getRoles())) {
 			user.setRoles("普通用户");
 		}
+
+		user.setProperty("isJson", false);
 
 		userService.add(user);
 		return JSONResultUtil.ok();

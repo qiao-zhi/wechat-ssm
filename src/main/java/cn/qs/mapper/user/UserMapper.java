@@ -7,27 +7,28 @@ import org.apache.ibatis.annotations.Param;
 
 import cn.qs.bean.user.User;
 import cn.qs.bean.user.UserExample;
+
 @Mapper
 public interface UserMapper {
-    int countByExample(UserExample example);
+	int countByExample(UserExample example);
 
-    int deleteByExample(UserExample example);
+	int deleteByExample(UserExample example);
 
-    int deleteByPrimaryKey(Integer id);
+	int deleteByPrimaryKey(Integer id);
 
-    int insert(User record);
+	int insert(User record);
 
-    int insertSelective(User record);
+	int insertSelective(User record);
 
-    List<User> selectByExample(UserExample example);
+	List<User> selectByExample(UserExample example);
 
-    User selectByPrimaryKey(Integer id);
+	User selectByPrimaryKey(Integer id);
 
-    int updateByExampleSelective(@Param("record") User record, @Param("example") UserExample example);
+	int updateByExampleSelective(@Param("record") User record, @Param("example") UserExample example);
 
-    int updateByExample(@Param("record") User record, @Param("example") UserExample example);
+	int updateByExample(@Param("record") User record, @Param("example") UserExample example);
 
-    int updateByPrimaryKeySelective(User record);
+	int updateByPrimaryKeySelective(User record);
 
-    int updateByPrimaryKey(User record);
+	int updateByPrimaryKey(User record);
 }

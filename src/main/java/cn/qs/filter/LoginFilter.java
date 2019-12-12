@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cn.qs.bean.user.User;
+import cn.qs.utils.system.UserContext;
 
 /**
  * 登陆过滤器
@@ -25,7 +26,7 @@ import cn.qs.bean.user.User;
  * @author Administrator
  *
  */
- @WebFilter(filterName = "loginFilter", urlPatterns = "/*")
+@WebFilter(filterName = "loginFilter", urlPatterns = "/*")
 public class LoginFilter implements Filter {
 	private static final Logger logger = LoggerFactory.getLogger(LoginFilter.class);
 
@@ -60,7 +61,11 @@ public class LoginFilter implements Filter {
 		if (user == null) {
 			res.sendRedirect(req.getContextPath() + "/login.html");
 		} else {
+			UserContext.set(user);
+
 			chain.doFilter(request, response);
+
+			UserContext.remove();
 		}
 
 	}

@@ -20,9 +20,20 @@ public class Pay extends AbstractSequenceEntity {
 	 */
 	private Integer kindergartenId;
 
+	/**
+	 * 幼儿园姓名
+	 */
+	private String kindergartenName;
+
+	/**
+	 * 用户ID
+	 */
 	private Integer userId;
 
-	private Integer username;
+	/**
+	 * username(缴费者)
+	 */
+	private String username;
 
 	/**
 	 * 学期
@@ -38,7 +49,7 @@ public class Pay extends AbstractSequenceEntity {
 
 	private String parentPhone;
 
-	private String childrenPhone;
+	private String childrenName;
 
 	/**
 	 * 年级
@@ -81,14 +92,6 @@ public class Pay extends AbstractSequenceEntity {
 		this.userId = userId;
 	}
 
-	public Integer getUsername() {
-		return username;
-	}
-
-	public void setUsername(Integer username) {
-		this.username = username;
-	}
-
 	public String getSemester() {
 		return semester;
 	}
@@ -119,14 +122,6 @@ public class Pay extends AbstractSequenceEntity {
 
 	public void setParentPhone(String parentPhone) {
 		this.parentPhone = parentPhone;
-	}
-
-	public String getChildrenPhone() {
-		return childrenPhone;
-	}
-
-	public void setChildrenPhone(String childrenPhone) {
-		this.childrenPhone = childrenPhone;
 	}
 
 	public String getGrade() {
@@ -167,6 +162,30 @@ public class Pay extends AbstractSequenceEntity {
 
 	public void setQrcodePath(String qrcodePath) {
 		this.qrcodePath = qrcodePath;
+	}
+
+	public String getKindergartenName() {
+		return kindergartenName;
+	}
+
+	public void setKindergartenName(String kindergartenName) {
+		this.kindergartenName = kindergartenName;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getChildrenName() {
+		return childrenName;
+	}
+
+	public void setChildrenName(String childrenName) {
+		this.childrenName = childrenName;
 	}
 
 }

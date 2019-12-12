@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import cn.qs.bean.user.User;
 import cn.qs.service.user.UserService;
+import cn.qs.utils.ThreadUtils;
 import cn.qs.utils.system.SpringBootUtils;
 
 @WebListener
@@ -21,7 +22,7 @@ public class StartApplicationListener implements ServletContextListener {
 
 	@Override
 	public void contextInitialized(ServletContextEvent sce) {
-		new Thread(new Runnable() {
+		ThreadUtils.execute(new Runnable() {
 			@Override
 			public void run() {
 				LOGGER.info("容器启动，开启线程同步数据创建默认用户");
@@ -32,7 +33,6 @@ public class StartApplicationListener implements ServletContextListener {
 				}
 
 				doCreateAdmin();
-
 			}
 
 			private void doCreateAdmin() {
@@ -54,8 +54,9 @@ public class StartApplicationListener implements ServletContextListener {
 				} else {
 					LOGGER.info("系统管理员已经存在");
 				}
+
 			}
-		}).start();
+		});
 	}
 
 	@Override
