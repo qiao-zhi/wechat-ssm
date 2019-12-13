@@ -44,6 +44,8 @@ public abstract class AbastractBaseServiceImpl<T, E extends Serializable> implem
 
 	@Override
 	public void update(T t) {
+		System.out.println("t:" + t);
+		
 		// 根据ID查询
 		Object propertyValue = BeanUtils.getProperty(t, "id");
 		T systemBean = getBaseMapper().findOne((E) propertyValue);
@@ -53,6 +55,7 @@ public abstract class AbastractBaseServiceImpl<T, E extends Serializable> implem
 			return;
 		}
 
+		System.out.println("systemBean:" + systemBean);
 		getBaseMapper().save(systemBean);
 	}
 

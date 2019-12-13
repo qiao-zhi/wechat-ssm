@@ -3,8 +3,6 @@ package cn.qs.bean.wechat;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
-import org.hibernate.annotations.Index;
-
 import cn.qs.bean.AbstractSequenceEntity;
 
 /**
@@ -80,6 +78,14 @@ public class Kindergarten extends AbstractSequenceEntity {
 
 	public void setAmount(Float amount) {
 		this.amount = amount;
+	}
+
+	@Override
+	public String toString() {
+		return "Kindergarten [name=" + name + ", version=" + version + ", server=" + server + ", address=" + address
+				+ ", amount=" + amount + ", id=" + id + ", creator=" + creator + ", createtime=" + createtime
+				+ ", remark1=" + remark1 + ", remark2=" + remark2 + ", remark3=" + remark3 + ", properties="
+				+ properties + ", propertiesMap=" + propertiesMap + "]";
 	}
 
 }
