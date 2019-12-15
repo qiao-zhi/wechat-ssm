@@ -188,4 +188,15 @@ public class Pay extends AbstractSequenceEntity {
 		this.childrenName = childrenName;
 	}
 
+	@Override
+	public String toString() {
+		return "Pay [kindergartenId=" + kindergartenId + ", kindergartenName=" + kindergartenName + ", userId=" + userId
+				+ ", username=" + username + ", semester=" + semester + ", payDate=" + payDate + ", parentName="
+				+ parentName + ", parentPhone=" + parentPhone + ", childrenName=" + childrenName + ", grade=" + grade
+				+ ", classNum=" + classNum + ", address=" + address + ", payAmount=" + payAmount + ", qrcodePath="
+				+ qrcodePath + ", id=" + id + ", creator=" + creator + ", createtime=" + createtime + ", remark1="
+				+ remark1 + ", remark2=" + remark2 + ", remark3=" + remark3 + ", properties=" + properties
+				+ ", propertiesMap=" + propertiesMap + "]";
+	}
+
 }

@@ -29,6 +29,10 @@ public class PropertiesFileUtils {
 	private PropertiesFileUtils() {
 	}
 
+	public static void saveOrUpdateProperty(String key, String value) {
+		saveOrUpdateProperty("settings.properties", key, value);
+	}
+
 	/**
 	 * 保存或更新properties文件中的key
 	 * 
@@ -57,6 +61,10 @@ public class PropertiesFileUtils {
 			IOUtils.closeQuietly(inputStream);
 			IOUtils.closeQuietly(outputStream);
 		}
+	}
+
+	public static String getPropertyValue(String key) {
+		return getPropertyValue("settings.properties", key);
 	}
 
 	/**

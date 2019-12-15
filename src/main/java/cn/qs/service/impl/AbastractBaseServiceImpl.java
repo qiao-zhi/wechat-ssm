@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.MapUtils;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.QPageRequest;
@@ -44,8 +42,6 @@ public abstract class AbastractBaseServiceImpl<T, E extends Serializable> implem
 
 	@Override
 	public void update(T t) {
-		System.out.println("t:" + t);
-		
 		// 根据ID查询
 		Object propertyValue = BeanUtils.getProperty(t, "id");
 		T systemBean = getBaseMapper().findOne((E) propertyValue);
@@ -55,7 +51,6 @@ public abstract class AbastractBaseServiceImpl<T, E extends Serializable> implem
 			return;
 		}
 
-		System.out.println("systemBean:" + systemBean);
 		getBaseMapper().save(systemBean);
 	}
 

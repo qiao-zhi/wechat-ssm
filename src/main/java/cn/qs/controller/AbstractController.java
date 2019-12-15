@@ -11,6 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -102,9 +104,43 @@ public abstract class AbstractController<T, E extends Serializable> {
 		} catch (Exception e) {
 			LOGGER.error("SpringDataJPA page error, viewbasePath : {}", getViewBasePath(), e);
 		}
-		
+
 		System.out.println(JSONObject.toJSONString(pages));
 		return pages;
+	}
+
+	/**
+	 * SpringDataJPA分页(返回JSON信息，封装到工具类中)
+	 * 
+	 * @param condition
+	 * @param request
+	 * @return
+	 * @throws InterruptedException
+	 */
+	@RequestMapping("pageJSON")
+	@ResponseBody
+	public JSONResultUtil<Page<T>> pageJSON(@RequestBody Map condition) throws InterruptedException {
+		int pageNum = 1;
+		if (StringUtils.isNotBlank(MapUtils.getString(condition, "pageNum"))) { // 如果不为空的话改变当前页号
+			pageNum = MapUtils.getInteger(condition, "pageNum");
+		}
+		int pageSize = DefaultValue.PAGE_SIZE;
+		if (StringUtils.isNotBlank(MapUtils.getString(condition, "pageSize"))) { // 如果不为空的话改变当前页大小
+			pageSize = MapUtils.getInteger(condition, "pageSize");
+		}
+
+		condition.put("pageNum", pageNum - 1);
+		condition.put("pageSize", pageSize);
+
+		Page<T> pages = null;
+		// 开始分页
+		try {
+			pages = getBaseService().pageByCondition(condition);
+		} catch (Exception e) {
+			LOGGER.error("SpringDataJPA page error, viewbasePath : {}", getViewBasePath(), e);
+		}
+
+		return new JSONResultUtil<Page<T>>(true, "ok", pages);
 	}
 
 	/**
@@ -139,6 +175,17 @@ public abstract class AbstractController<T, E extends Serializable> {
 	public JSONResultUtil doUpdate(T bean) {
 		getBaseService().update(bean);
 		return JSONResultUtil.ok();
+	}
+
+	@RequestMapping("detail/{id}")
+	@ResponseBody
+	public JSONResultUtil<T> detailRest(@PathVariable() E id) {
+		T bean = getBaseService().findById(id);
+		if (bean == null) {
+			return new JSONResultUtil<>(false, "不存在", bean);
+		}
+
+		return new JSONResultUtil<>(true, "", bean);
 	}
 
 	@RequestMapping("detail")
