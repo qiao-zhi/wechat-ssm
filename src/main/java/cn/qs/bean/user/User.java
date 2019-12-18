@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 
 import cn.qs.bean.AbstractSequenceEntity;
 
+// remark1 用作地址
 @Entity
 public class User extends AbstractSequenceEntity {
 
