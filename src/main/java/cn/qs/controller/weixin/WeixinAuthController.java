@@ -7,11 +7,13 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -51,6 +53,18 @@ public class WeixinAuthController {
 
 		map.put("signers", signers);
 		return "weixinauth/index";
+	}
+
+	@RequestMapping("/getJsapiSigner")
+	@ResponseBody
+	public JSONResultUtil<Map<String, String>> getJsapiSigner(
+			@RequestBody(required = false) Map<String, Object> condition) {
+
+		String url = MapUtils.getString(condition, "url");
+		Map<String, String> signers = WeixinJSAPISignUtils.sign(WeixinInterfaceUtils.getJsapiTicket(), url);
+		logger.debug("signers: {}", signers);
+
+		return new JSONResultUtil<Map<String, String>>(true, "ok", signers);
 	}
 
 	/**

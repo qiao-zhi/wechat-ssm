@@ -7,7 +7,11 @@ import java.util.Map;
 
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.ExampleMatcher.GenericPropertyMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.QPageRequest;
@@ -55,7 +59,38 @@ public class KindergartenServiceImpl extends AbastractBaseSequenceServiceImpl<Ki
 		}
 
 		return result;
+	}
 
+	@Override
+	public Page<Kindergarten> pageByCondition(Map condition) {
+		// 构造请求参数，页号从0开始。
+		int pageNum = MapUtils.getInteger(condition, "pageNum", 0);
+		int pageSize = MapUtils.getInteger(condition, "pageSize", 0);
+		Pageable pageRequest = new QPageRequest(pageNum, pageSize);
+
+		// 根据条件查询:
+		String keywords = MapUtils.getString(condition, "keywords", "");
+		if (StringUtils.isNotBlank(keywords)) {
+			Kindergarten kindergarten = new Kindergarten();
+			kindergarten.setCreatetime(null);
+			kindergarten.setCreator(null);
+			kindergarten.setName(keywords);
+			/*
+			 * kindergarten.setAddress(keywords);
+			 * kindergarten.setVersion(keywords);
+			 * kindergarten.setServer(keywords);
+			 */
+
+			GenericPropertyMatcher contains = ExampleMatcher.GenericPropertyMatchers.contains();
+			ExampleMatcher matcher = ExampleMatcher.matching().withMatcher("name", contains);
+			// .withMatcher("address", contains).withMatcher("server",
+			// contains).withMatcher("version", contains);// 查询username包含修改user
+			Example<Kindergarten> example = Example.of(kindergarten, matcher);
+
+			return getBaseMapper().findAll(example, pageRequest);
+		}
+
+		return getBaseMapper().findAll(pageRequest);
 	}
 
 }
