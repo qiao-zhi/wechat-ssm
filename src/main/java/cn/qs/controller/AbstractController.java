@@ -1,6 +1,8 @@
 package cn.qs.controller;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,8 +20,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 
+import cn.qs.bean.user.User;
 import cn.qs.service.BaseService;
 import cn.qs.utils.DefaultValue;
 import cn.qs.utils.JSONResultUtil;
@@ -141,6 +145,38 @@ public abstract class AbstractController<T, E extends Serializable> {
 		}
 
 		return new JSONResultUtil<Page<T>>(true, "ok", pages);
+	}
+
+	/**
+	 * mybatis分页(交由有需要的子类复写)
+	 * 
+	 * @param condition
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("pageJSON2")
+	@ResponseBody
+	public JSONResultUtil<PageInfo<T>> pageJSON2(@RequestBody(required = false) Map condition) {
+		int pageNum = 1;
+		if (StringUtils.isNotBlank(MapUtils.getString(condition, "pageNum"))) { // 如果不为空的话改变当前页号
+			pageNum = MapUtils.getInteger(condition, "pageNum");
+		}
+		int pageSize = DefaultValue.PAGE_SIZE;
+		if (StringUtils.isNotBlank(MapUtils.getString(condition, "pageSize"))) { // 如果不为空的话改变当前页大小
+			pageSize = MapUtils.getInteger(condition, "pageSize");
+		}
+
+		// 开始分页
+		PageHelper.startPage(pageNum, pageSize);
+		List<T> users = new ArrayList<T>();
+		try {
+			users = getBaseService().listByCondition(condition);
+		} catch (Exception e) {
+			LOGGER.error("getUsers error！", e);
+		}
+		PageInfo<T> pageInfo = new PageInfo<T>(users);
+
+		return new JSONResultUtil<PageInfo<T>>(true, "ok", pageInfo);
 	}
 
 	/**
