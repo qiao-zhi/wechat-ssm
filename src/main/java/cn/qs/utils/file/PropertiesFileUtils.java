@@ -12,6 +12,7 @@ import java.util.Properties;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ClassPathResource;
 
 /**
  * 操作properties文件的工具类(此工具类的file都是src目录下的properties文件，编译之后在build目录下)
@@ -45,15 +46,15 @@ public class PropertiesFileUtils {
 		InputStream inputStream = null;
 		OutputStream outputStream = null;
 		try {
-			String path = PropertiesFileUtils.class.getClassLoader().getResource(fileName).getPath();
-			inputStream = new FileInputStream(new File(path));
-			log.debug("path -> {}", path);
+			ClassPathResource resource = new ClassPathResource(fileName);
+			inputStream = resource.getInputStream();
 
 			properties.load(inputStream);
 			properties.setProperty(key, value);
 
 			// 保存到文件中(如果有的话会自动更新，没有会创建)
-			outputStream = new FileOutputStream(new File(path));
+			File file = resource.getFile();
+			outputStream = new FileOutputStream(file);
 			properties.store(outputStream, "");
 		} catch (Exception e) {
 			log.error("saveOrUpdateProperty error", e);
@@ -80,9 +81,8 @@ public class PropertiesFileUtils {
 		String value = "";
 
 		try {
-			String path = PropertiesFileUtils.class.getClassLoader().getResource(fileName).getPath();
-			log.info("path -> {}", path);
-			inputStream = new FileInputStream(new File(path));
+			ClassPathResource resource = new ClassPathResource(fileName);
+			inputStream = resource.getInputStream();
 			properties.load(inputStream);
 			value = properties.getProperty(key);
 		} catch (Exception e) {
@@ -105,9 +105,8 @@ public class PropertiesFileUtils {
 		InputStream inputStream = null;
 
 		try {
-			String path = PropertiesFileUtils.class.getClassLoader().getResource(fileName).getPath();
-			log.info("path -> {}", path);
-			inputStream = new FileInputStream(new File(path));
+			ClassPathResource resource = new ClassPathResource(fileName);
+			inputStream = resource.getInputStream();
 			properties.load(inputStream);
 		} catch (Exception e) {
 			log.error("saveOrUpdateProperty error", e);
@@ -130,9 +129,8 @@ public class PropertiesFileUtils {
 		OutputStream outputStream = null;
 
 		try {
-			String path = PropertiesFileUtils.class.getClassLoader().getResource(fileName).getPath();
-			log.info("path -> {}", path);
-			inputStream = new FileInputStream(new File(path));
+			ClassPathResource resource = new ClassPathResource(fileName);
+			inputStream = resource.getInputStream();
 			properties.load(inputStream);
 			log.info("properties -> {}", properties);
 			if (properties != null && properties.containsKey(key)) {
@@ -141,7 +139,7 @@ public class PropertiesFileUtils {
 			}
 
 			// 保存到文件中(将properties保存到文件)
-			outputStream = new FileOutputStream(new File(path));
+			outputStream = new FileOutputStream(resource.getFile());
 			properties.store(outputStream, "");
 		} catch (FileNotFoundException e) {
 			log.error("saveOrUpdateProperty error", e);

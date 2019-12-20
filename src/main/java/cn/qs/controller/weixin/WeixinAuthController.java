@@ -76,7 +76,7 @@ public class WeixinAuthController {
 	@RequestMapping("/login")
 	public String authorize() throws UnsupportedEncodingException {
 		// 回调地址必须在公网可以访问
-		String recirectUrl = URLEncoder.encode("http://4de70c98.ngrok.io/weixin/auth/calback.html", "UTF-8");
+		String recirectUrl = URLEncoder.encode(WeixinConstants.AUTH_REDIRECT_URL, "UTF-8");
 
 		// 授权地址
 		String url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=APPID&redirect_uri=REDIRECT_URI&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect";
@@ -125,12 +125,12 @@ public class WeixinAuthController {
 			}
 		}
 
-		return new JSONResultUtil<User>(false, "获取信息时报");
+		return new JSONResultUtil<User>(false, "获取信息错误");
 	}
 
 	private JSONResultUtil<User> doLoginWithWechatUser(WechatUser wechatUser) {
 		if (wechatUser == null || StringUtils.isBlank(wechatUser.getOpenid())) {
-			return new JSONResultUtil<User>(false, "获取信息时报");
+			return new JSONResultUtil<User>(false, "获取信息错误");
 		}
 
 		String openid = wechatUser.getOpenid();
