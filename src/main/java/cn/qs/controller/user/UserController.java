@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,6 +29,7 @@ import cn.qs.service.user.UserService;
 import cn.qs.utils.DefaultValue;
 import cn.qs.utils.JSONResultUtil;
 import cn.qs.utils.securty.MD5Utils;
+import cn.qs.utils.system.SystemUtils;
 
 @Controller
 @RequestMapping("user")
@@ -149,6 +151,18 @@ public class UserController extends AbstractSequenceController<User> {
 		PageInfo<User> pageInfo = new PageInfo<User>(users);
 
 		return pageInfo;
+	}
+
+	@RequestMapping("detailLoginUser")
+	@ResponseBody
+	public JSONResultUtil<User> detailRest() {
+		Integer id = SystemUtils.getLoginUser().getId();
+		User bean = getBaseService().findById(id);
+		if (bean == null) {
+			return new JSONResultUtil<>(false, "不存在", bean);
+		}
+
+		return new JSONResultUtil<>(true, "", bean);
 	}
 
 	@Override

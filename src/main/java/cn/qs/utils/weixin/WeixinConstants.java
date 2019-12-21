@@ -11,6 +11,12 @@ public class WeixinConstants {
 	public static String AUTH_REDIRECT_URL = PropertiesFileUtils.getPropertyValue("application.properties",
 			"AUTH_REDIRECT_URL");
 
+	public static String ROLE_ADMIN_REDIRECTURL = PropertiesFileUtils.getPropertyValue("application.properties",
+			"ROLE_ADMIN_REDIRECTURL");
+
+	public static String ROLE_PLAIN_REDIRECTURL = PropertiesFileUtils.getPropertyValue("application.properties",
+			"ROLE_PLAIN_REDIRECTURL");
+
 	public static void main(String[] args) {
 		System.out.println(AUTH_REDIRECT_URL);
 

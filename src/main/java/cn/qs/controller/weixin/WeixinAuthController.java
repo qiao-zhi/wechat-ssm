@@ -24,6 +24,7 @@ import com.alibaba.fastjson.JSONObject;
 import cn.qs.bean.user.User;
 import cn.qs.bean.user.WechatUser;
 import cn.qs.service.user.UserService;
+import cn.qs.utils.DefaultValue;
 import cn.qs.utils.HttpUtils;
 import cn.qs.utils.JSONResultUtil;
 import cn.qs.utils.securty.MD5Utils;
@@ -81,6 +82,7 @@ public class WeixinAuthController {
 		// 授权地址
 		String url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=APPID&redirect_uri=REDIRECT_URI&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect";
 		url = url.replace("APPID", WeixinConstants.APPID).replace("REDIRECT_URI", recirectUrl);
+		logger.debug("url: {}", url);
 
 		// 参数替换之后重定向到授权地址
 		return "redirect:" + url;
@@ -97,40 +99,44 @@ public class WeixinAuthController {
 	 * @throws UnsupportedEncodingException
 	 */
 	@RequestMapping("/calback")
-	@ResponseBody
-	public JSONResultUtil<User> calback(String code, String state) throws UnsupportedEncodingException {
+	public String calback(String code, String state) throws UnsupportedEncodingException {
 		// 获取access_token和openid
-		String url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=APPID&secret=SECRET&code=CODE&grant_type=authorization_code";
-		url = url.replace("APPID", WeixinConstants.APPID).replace("SECRET", WeixinConstants.APP_SECRET).replace("CODE",
-				code);
-		String doGet = HttpUtils.doGet(url);
+		try {
+			String url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=APPID&secret=SECRET&code=CODE&grant_type=authorization_code";
+			url = url.replace("APPID", WeixinConstants.APPID).replace("SECRET", WeixinConstants.APP_SECRET)
+					.replace("CODE", code);
+			String doGet = HttpUtils.doGet(url);
 
-		if (StringUtils.isNotBlank(doGet)) {
-			JSONObject parseObject = JSONObject.parseObject(doGet);
+			if (StringUtils.isNotBlank(doGet)) {
+				JSONObject parseObject = JSONObject.parseObject(doGet);
 
-			// 获取两个参数之后获取用户信息
-			String accessToken = parseObject.getString("access_token");
-			String openid = parseObject.getString("openid");
-			String getUserInfoURL = "https://api.weixin.qq.com/sns/userinfo?access_token=ACCESS_TOKEN&openid=OPENID&lang=zh_CN";
-			getUserInfoURL = getUserInfoURL.replace("ACCESS_TOKEN", accessToken).replace("OPENID", openid);
-			String doGet2 = HttpUtils.doGet(getUserInfoURL);
-			logger.debug("userInfo: {}", doGet2);
+				// 获取两个参数之后获取用户信息
+				String accessToken = parseObject.getString("access_token");
+				String openid = parseObject.getString("openid");
+				String getUserInfoURL = "https://api.weixin.qq.com/sns/userinfo?access_token=ACCESS_TOKEN&openid=OPENID&lang=zh_CN";
+				getUserInfoURL = getUserInfoURL.replace("ACCESS_TOKEN", accessToken).replace("OPENID", openid);
+				String doGet2 = HttpUtils.doGet(getUserInfoURL);
+				logger.debug("userInfo: {}", doGet2);
 
-			// 用获取到的用户信息进行自己体系的登录
-			if (StringUtils.isNotBlank(doGet2)) {
-				WechatUser user = JSONObject.parseObject(doGet2, WechatUser.class);
-				logger.debug("user: {}", user);
+				// 用获取到的用户信息进行自己体系的登录
+				if (StringUtils.isNotBlank(doGet2)) {
+					WechatUser user = JSONObject.parseObject(doGet2, WechatUser.class);
+					logger.debug("user: {}", user);
 
-				return doLoginWithWechatUser(user);
+					return doLoginWithWechatUser(user);
+				}
 			}
+		} catch (Exception e) {
+			logger.error("登录错误", e);
 		}
 
-		return new JSONResultUtil<User>(false, "获取信息错误");
+		logger.info("登录失败了");
+		return "error";
 	}
 
-	private JSONResultUtil<User> doLoginWithWechatUser(WechatUser wechatUser) {
+	private String doLoginWithWechatUser(WechatUser wechatUser) {
 		if (wechatUser == null || StringUtils.isBlank(wechatUser.getOpenid())) {
-			return new JSONResultUtil<User>(false, "获取信息错误");
+			return "获取信息错误";
 		}
 
 		String openid = wechatUser.getOpenid();
@@ -169,8 +175,17 @@ public class WeixinAuthController {
 
 		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
 				.getRequest();
-		HttpSession session = request.getSession(false);
+		HttpSession session = request.getSession();
 		session.setAttribute("user", findUserByUsername);
-		return new JSONResultUtil<User>(true, "登录成功", findUserByUsername);
+
+		// 登录成功之后后台进行跳转
+		String redirectUrl = "";
+		if (DefaultValue.ROLE_SYSYEM.equals(findUserByUsername.getUsername())) {
+			redirectUrl = "redirect:" + WeixinConstants.ROLE_ADMIN_REDIRECTURL;
+		} else {
+			redirectUrl = "redirect:" + WeixinConstants.ROLE_PLAIN_REDIRECTURL;
+		}
+
+		return redirectUrl;
 	}
 }
