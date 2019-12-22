@@ -63,7 +63,9 @@ public class WeixinAuthController {
 
 		String url = MapUtils.getString(condition, "url");
 		Map<String, String> signers = WeixinJSAPISignUtils.sign(WeixinInterfaceUtils.getJsapiTicket(), url);
-		logger.debug("signers: {}", signers);
+
+		signers.put("appId", WeixinConstants.APPID);
+		logger.info("signers: {}", signers);
 
 		return new JSONResultUtil<Map<String, String>>(true, "ok", signers);
 	}

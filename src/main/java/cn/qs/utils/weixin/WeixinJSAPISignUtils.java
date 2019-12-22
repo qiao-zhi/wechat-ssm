@@ -17,7 +17,7 @@ public class WeixinJSAPISignUtils {
 		for (Map.Entry entry : ret.entrySet()) {
 			System.out.println(entry.getKey() + ", " + entry.getValue());
 		}
-	};
+	}
 
 	/**
 	 * 签名
@@ -35,7 +35,7 @@ public class WeixinJSAPISignUtils {
 		String signatureString;
 		String signature = "";
 
-		// 注意这里参数名必须全部小写，且必须有序(必须这样签名)
+		// 注意这里参数名必须全部小写，且必须有序(必须这样签名)==签名用的noncestr和timestamp必须与wx.config中的nonceStr和timestamp相同。签名用的url必须是调用JS接口页面的完整URL。
 		signatureString = "jsapi_ticket=" + jsapiTicket + "&noncestr=" + nonce_str + "&timestamp=" + timestamp + "&url="
 				+ url;
 
