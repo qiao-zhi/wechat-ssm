@@ -26,6 +26,13 @@ public abstract class WXPayConfig {
 	public abstract String getKey();
 
 	/**
+	 * 获取 API 密钥
+	 *
+	 * @return API密钥
+	 */
+	public abstract String getSandBoxApiKey();
+
+	/**
 	 * 获取商户证书内容
 	 *
 	 * @return 商户证书内容

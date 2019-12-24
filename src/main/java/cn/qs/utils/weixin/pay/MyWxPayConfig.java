@@ -6,21 +6,23 @@ import com.github.wxpay.sdk.IWXPayDomain;
 import com.github.wxpay.sdk.WXPayConfig;
 import com.github.wxpay.sdk.WXPayConstants;
 
+import cn.qs.utils.weixin.WeixinConstants;
+
 public class MyWxPayConfig extends WXPayConfig {
 
 	@Override
 	public String getAppID() {
-		return "";
+		return WeixinConstants.APPID;
 	}
 
 	@Override
 	public String getMchID() {
-		return "";
+		return WeixinConstants.MCHID;
 	}
 
 	@Override
 	public String getKey() {
-		return "";
+		return WeixinConstants.API_KEY;
 	}
 
 	@Override
@@ -52,6 +54,17 @@ public class MyWxPayConfig extends WXPayConfig {
 	@Override
 	public boolean shouldAutoReport() {
 		return false;
+	}
+
+	@Override
+	public String getSandBoxApiKey() {
+		try {
+			return MyWxPayUtils.getSandboxAPIKey();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return "";
 	}
 
 }
