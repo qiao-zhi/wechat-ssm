@@ -16,8 +16,7 @@ import cn.qs.utils.weixin.WeixinConstants;
 public class MyWxPayUtils {
 
 	public static void main(String[] args) throws Exception {
-		// unifiedOrder();
-		orderquery();
+		unifiedOrder();
 	}
 
 	private static void orderquery() throws Exception {
@@ -54,6 +53,7 @@ public class MyWxPayUtils {
 		String doPost = HttpUtils.doPost(url, mapToXml);
 		Map<String, String> xmlToMap = WXPayUtil.xmlToMap(doPost);
 		String sandbox_signkey = MapUtils.getString(xmlToMap, "sandbox_signkey", "");
+		System.out.println("sandbox_signkey: " + sandbox_signkey);
 		return sandbox_signkey;
 	}
 
@@ -70,7 +70,7 @@ public class MyWxPayUtils {
 		// 商品详情
 		param.put("attach", "附加信息");
 		// 商户订单号
-		param.put("out_trade_no", "2");
+		param.put("out_trade_no", "4");
 		// 标价币种
 		param.put("fee_type", "CNY");
 		// 标价金额(单位为分)

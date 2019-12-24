@@ -1,4 +1,4 @@
-package cn.qs.utils.weixin;
+package cn.qs.utils.weixin.auth;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
@@ -7,6 +7,8 @@ import java.util.Formatter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+
+import cn.qs.utils.weixin.WeixinInterfaceUtils;
 
 public class WeixinJSAPISignUtils {
 

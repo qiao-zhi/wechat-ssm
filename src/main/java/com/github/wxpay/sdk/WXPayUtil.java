@@ -1,10 +1,15 @@
 package com.github.wxpay.sdk;
 
-import com.github.wxpay.sdk.WXPayConstants.SignType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.security.MessageDigest;
+import java.security.SecureRandom;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -14,12 +19,14 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.io.StringWriter;
-import java.security.MessageDigest;
-import java.security.SecureRandom;
-import java.util.*;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import com.github.wxpay.sdk.WXPayConstants.SignType;
 
 public class WXPayUtil {
 
@@ -224,7 +231,11 @@ public class WXPayUtil {
 			if (data.get(k).trim().length() > 0) // 参数值为空，则不参与签名
 				sb.append(k).append("=").append(data.get(k).trim()).append("&");
 		}
-		sb.append("key=").append(key);
+
+		if (StringUtils.isNotBlank(key)) {
+			sb.append("key=").append(key);
+		}
+
 		if (SignType.MD5.equals(signType)) {
 			return MD5(sb.toString()).toUpperCase();
 		} else if (SignType.HMACSHA256.equals(signType)) {
@@ -303,6 +314,15 @@ public class WXPayUtil {
 	 */
 	public static long getCurrentTimestamp() {
 		return System.currentTimeMillis() / 1000;
+	}
+
+	/**
+	 * 获取当前时间戳，单位秒
+	 * 
+	 * @return
+	 */
+	public static String getCurrentTimestampStr() {
+		return Long.toString(System.currentTimeMillis() / 1000);
 	}
 
 	/**

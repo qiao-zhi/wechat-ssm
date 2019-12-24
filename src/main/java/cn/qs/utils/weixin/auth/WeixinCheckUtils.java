@@ -1,4 +1,4 @@
-package cn.qs.utils.weixin;
+package cn.qs.utils.weixin.auth;
 
 import java.security.MessageDigest;
 import java.util.Arrays;

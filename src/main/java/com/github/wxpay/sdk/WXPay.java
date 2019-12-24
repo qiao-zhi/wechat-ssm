@@ -137,6 +137,11 @@ public class WXPay {
 		return WXPayUtil.isSignatureValid(reqData, getKey(), signType);
 	}
 
+	/**
+	 * 重写getKey方法，如果是沙箱测试获取对应的APIkey，否则用生产环境的key
+	 * 
+	 * @return
+	 */
 	private String getKey() {
 		String key = "";
 		if (useSandbox) {

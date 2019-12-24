@@ -30,7 +30,7 @@ import cn.qs.utils.JSONResultUtil;
 import cn.qs.utils.securty.MD5Utils;
 import cn.qs.utils.weixin.WeixinConstants;
 import cn.qs.utils.weixin.WeixinInterfaceUtils;
-import cn.qs.utils.weixin.WeixinJSAPISignUtils;
+import cn.qs.utils.weixin.auth.WeixinJSAPISignUtils;
 
 @Controller
 @RequestMapping("weixin/auth")
@@ -84,7 +84,7 @@ public class WeixinAuthController {
 		// 授权地址
 		String url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=APPID&redirect_uri=REDIRECT_URI&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect";
 		url = url.replace("APPID", WeixinConstants.APPID).replace("REDIRECT_URI", recirectUrl);
-		logger.debug("url: {}", url);
+		logger.info("url: {}", url);
 
 		// 参数替换之后重定向到授权地址
 		return "redirect:" + url;
