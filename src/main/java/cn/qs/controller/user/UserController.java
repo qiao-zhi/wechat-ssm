@@ -29,7 +29,7 @@ import cn.qs.service.user.UserService;
 import cn.qs.utils.DefaultValue;
 import cn.qs.utils.JSONResultUtil;
 import cn.qs.utils.securty.MD5Utils;
-import cn.qs.utils.system.SystemUtils;
+import cn.qs.utils.system.MySystemUtils;
 
 @Controller
 @RequestMapping("user")
@@ -156,7 +156,7 @@ public class UserController extends AbstractSequenceController<User> {
 	@RequestMapping("detailLoginUser")
 	@ResponseBody
 	public JSONResultUtil<User> detailRest() {
-		Integer id = SystemUtils.getLoginUser().getId();
+		Integer id = MySystemUtils.getLoginUser().getId();
 		User bean = getBaseService().findById(id);
 		if (bean == null) {
 			return new JSONResultUtil<>(false, "不存在", bean);

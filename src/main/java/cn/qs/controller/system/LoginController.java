@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import cn.qs.bean.user.User;
 import cn.qs.service.user.UserService;
 import cn.qs.utils.JSONResultUtil;
-import cn.qs.utils.system.SystemUtils;
+import cn.qs.utils.system.MySystemUtils;
 
 /**
  * 登陆
@@ -37,7 +37,7 @@ public class LoginController {
 	 */
 	@RequestMapping("login")
 	public String login(HttpServletRequest request) {
-		request.setAttribute("productName", SystemUtils.getProductName());
+		request.setAttribute("productName", MySystemUtils.getProductName());
 		return "login";
 	}
 

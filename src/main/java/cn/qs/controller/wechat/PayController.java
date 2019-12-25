@@ -18,7 +18,7 @@ import cn.qs.controller.AbstractSequenceController;
 import cn.qs.service.BaseService;
 import cn.qs.service.wechat.PayService;
 import cn.qs.utils.JSONResultUtil;
-import cn.qs.utils.system.SystemUtils;
+import cn.qs.utils.system.MySystemUtils;
 
 @Controller
 @RequestMapping("pay")
@@ -48,8 +48,8 @@ public class PayController extends AbstractSequenceController<Pay> {
 	@ResponseBody
 	public JSONResultUtil doAddJSON(@RequestBody Pay pay) {
 		pay.setPayDate(new Date());
-		pay.setUserId(SystemUtils.getLoginUser().getId());
-		pay.setUsername(SystemUtils.getLoginUser().getUsername());
+		pay.setUserId(MySystemUtils.getLoginUser().getId());
+		pay.setUsername(MySystemUtils.getLoginUser().getUsername());
 
 		payService.add(pay);
 		return JSONResultUtil.ok();

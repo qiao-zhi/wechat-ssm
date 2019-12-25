@@ -8,7 +8,10 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -16,13 +19,52 @@ import cn.qs.bean.user.User;
 import cn.qs.utils.UUIDUtils;
 import cn.qs.utils.file.PropertiesFileUtils;
 
-public class SystemUtils {
-	private SystemUtils() {
+public class MySystemUtils {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(MySystemUtils.class);
+
+	static {
+		checkSettingPropertyFiles();
 	}
 
+	private MySystemUtils() {
+	}
+
+	/**
+	 * 检查settings.properties文件是否存在，不存在就创建
+	 */
+	public static void checkSettingPropertyFiles() {
+		File userDir = SystemUtils.getUserDir();
+		File propertiesFile = new File(userDir, "settings.properties");
+		if (!propertiesFile.exists()) {
+			try {
+				propertiesFile.createNewFile();
+				LOGGER.info("create settings.properties success, path: {}", propertiesFile.getAbsolutePath());
+
+				setProperty("productName", "管理网");
+			} catch (IOException e) {
+				LOGGER.error("create settings.properties failed", e);
+			}
+		}
+	}
+
+	public static final String settings_file_path = SystemUtils.getUserDir().getAbsolutePath() + "/settings.properties";
+
 	public static String getProductName() {
-		return StringUtils.defaultIfBlank(PropertiesFileUtils.getPropertyValue("settings.properties", "productName"),
-				"管理网");
+		return getProperty("productName", "管理网");
+	}
+
+	public static String getProperty(String key) {
+		return getProperty(key, "");
+	}
+
+	public static String getProperty(String key, String defaultValue) {
+		return StringUtils.defaultIfBlank(PropertiesFileUtils.getPropertyValueByFilePath(settings_file_path, key),
+				defaultValue);
+	}
+
+	public static void setProperty(String key, Object value) {
+		PropertiesFileUtils.saveOrUpdatePropertyByFilePath(settings_file_path, key, String.valueOf(value));
 	}
 
 	public static User getLoginUser() {

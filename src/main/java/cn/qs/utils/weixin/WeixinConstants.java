@@ -20,11 +20,4 @@ public class WeixinConstants {
 
 	public static String ROLE_PLAIN_REDIRECTURL = PropertiesFileUtils.getPropertyValue("application.properties",
 			"ROLE_PLAIN_REDIRECTURL");
-
-	public static void main(String[] args) {
-		System.out.println(AUTH_REDIRECT_URL);
-
-		PropertiesFileUtils.saveOrUpdateProperty("test", "123");
-		System.out.println(PropertiesFileUtils.getPropertyValue("test"));
-	}
 }

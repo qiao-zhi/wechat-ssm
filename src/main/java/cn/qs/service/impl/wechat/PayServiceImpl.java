@@ -16,7 +16,7 @@ import cn.qs.mapper.wechat.custom.PayCustomMapper;
 import cn.qs.service.impl.AbastractBaseSequenceServiceImpl;
 import cn.qs.service.wechat.PayService;
 import cn.qs.utils.DefaultValue;
-import cn.qs.utils.system.SystemUtils;
+import cn.qs.utils.system.MySystemUtils;
 
 @Service
 @Transactional
@@ -41,7 +41,7 @@ public class PayServiceImpl extends AbastractBaseSequenceServiceImpl<Pay> implem
 	@Override
 	public List<Pay> listByCondition(Map condition) {
 		// 普通用户只能查自己创建的
-		if (DefaultValue.ROLE_SYSYEM.equals(SystemUtils.getLoginUser().getRoles())) {
+		if (DefaultValue.ROLE_SYSYEM.equals(MySystemUtils.getLoginUser().getRoles())) {
 			if (StringUtils.isNotBlank(MapUtils.getString(condition, "keywords"))) {
 				return payCustomMapper.listByCondition(condition);
 			}
@@ -49,7 +49,7 @@ public class PayServiceImpl extends AbastractBaseSequenceServiceImpl<Pay> implem
 			return payMapper.findAll();
 		}
 
-		condition.put("creator", SystemUtils.getLoginUser().getUsername());
+		condition.put("creator", MySystemUtils.getLoginUser().getUsername());
 		return payCustomMapper.listByConditionByCreator(condition);
 	}
 }

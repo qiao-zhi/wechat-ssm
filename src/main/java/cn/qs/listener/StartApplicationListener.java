@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import cn.qs.bean.user.User;
 import cn.qs.service.user.UserService;
 import cn.qs.utils.ThreadUtils;
+import cn.qs.utils.system.MySystemUtils;
 import cn.qs.utils.system.SpringBootUtils;
 
 @WebListener
@@ -22,6 +23,9 @@ public class StartApplicationListener implements ServletContextListener {
 
 	@Override
 	public void contextInitialized(ServletContextEvent sce) {
+		// 检查配置文件
+		MySystemUtils.checkSettingPropertyFiles();
+
 		ThreadUtils.execute(new Runnable() {
 			@Override
 			public void run() {
