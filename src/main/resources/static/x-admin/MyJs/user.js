@@ -20,7 +20,7 @@ function showTable(pageInfo){
             +'<td>'+replaceNull(beans[i].username)+'</td>'
             +'<td>'+replaceNull(beans[i].fullname)+'</td>'
             +'<td>'+replaceNull(beans[i].sex)+'</td>'
-            +'<td>'+replaceNull(beans[i].email)+'</td>'
+            /*+'<td>'+replaceNull(beans[i].email)+'</td>'*/
             +'<td>'+replaceNull(beans[i].phone)+'</td>'
             +'<td>'+replaceNull(beans[i].createtime)+'</td>'
             +'<td>'+replaceNull(beans[i].roles)+'</td>'

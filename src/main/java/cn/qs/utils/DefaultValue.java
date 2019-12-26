@@ -33,4 +33,9 @@ public class DefaultValue {
 	 */
 	public static final String ROLE_PLAIN_USER = "普通用户";
 
+	/**
+	 * 默认的用户头像(用于app中头像显示)
+	 */
+	public static String DEFAULT_USER_WECHAT_PHOTO = "http://thirdwx.qlogo.cn/mmopen/vi_32/eyzvWHuvEwzP5zAcxahq1PXMfAqOfMOB7b90zru3OSSyxkp0UibibIFATgyUHnPxkloswOxs7GIH5pWF0pYC70lw/132";
+
 }

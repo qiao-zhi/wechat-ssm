@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,6 +29,7 @@ import cn.qs.utils.DefaultValue;
 import cn.qs.utils.JSONResultUtil;
 import cn.qs.utils.securty.MD5Utils;
 import cn.qs.utils.system.MySystemUtils;
+import cn.qs.utils.user.UserUtils;
 
 @Controller
 @RequestMapping("user")
@@ -87,7 +87,8 @@ public class UserController extends AbstractSequenceController<User> {
 			user.setRoles("普通用户");
 		}
 
-		user.setProperty("isJson", false);
+		UserUtils.addDefaultWechatInfo(user);
+		user.setProperty("from", "pc");
 
 		userService.add(user);
 		return JSONResultUtil.ok();
@@ -116,6 +117,8 @@ public class UserController extends AbstractSequenceController<User> {
 		if (StringUtils.isBlank(user.getRoles())) {
 			user.setRoles("普通用户");
 		}
+
+		UserUtils.addDefaultWechatInfo(user);
 
 		userService.add(user);
 		return JSONResultUtil.ok();
@@ -163,6 +166,22 @@ public class UserController extends AbstractSequenceController<User> {
 		}
 
 		return new JSONResultUtil<>(true, "", bean);
+	}
+
+	@RequestMapping("updateLoginUser")
+	@ResponseBody
+	public JSONResultUtil<String> updateLoginUser(@RequestBody User user) {
+		if (MySystemUtils.getLoginUser() == null) {
+			return new JSONResultUtil<>(false, "请您登陆", "");
+		}
+
+		// 防止恶意修改角色
+		user.setRoles(null);
+
+		Integer id = MySystemUtils.getLoginUser().getId();
+		user.setId(id);
+		userService.update(user);
+		return new JSONResultUtil<>(true, "修改成功", "");
 	}
 
 	@Override
