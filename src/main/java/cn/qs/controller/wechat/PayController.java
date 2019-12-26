@@ -53,7 +53,7 @@ public class PayController extends AbstractSequenceController<Pay> {
 	 */
 	@RequestMapping("doAddJSON")
 	@ResponseBody
-	public JSONResultUtil doAddJSON(@RequestBody Pay pay) {
+	public JSONResultUtil<Pay> doAddJSON(@RequestBody Pay pay) {
 		pay.setPayDate(new Date());
 		pay.setUserId(MySystemUtils.getLoginUser().getId());
 		pay.setUsername(MySystemUtils.getLoginUser().getUsername());
@@ -61,7 +61,7 @@ public class PayController extends AbstractSequenceController<Pay> {
 		String loginUsername = MySystemUtils.getLoginUsername();
 		User findUserByUsername = userService.findUserByUsername(loginUsername);
 		Float coupon = ArithUtils.format(findUserByUsername.getCoupon(), 2);
-		if (coupon != null && findUserByUsername.getCoupon() != 0 && coupon < pay.getPayAmount()) {
+		if (coupon != null && coupon != 0 && coupon < pay.getPayAmount()) {
 			Float shouldPay = ArithUtils.format(pay.getPayAmount(), 2);
 			Float actuallyPay = ArithUtils.sub(shouldPay, coupon);
 			pay.setPayAmount(actuallyPay);
@@ -77,7 +77,7 @@ public class PayController extends AbstractSequenceController<Pay> {
 		}
 
 		payService.add(pay);
-		return JSONResultUtil.ok();
+		return new JSONResultUtil<Pay>(true, "ok", pay);
 	}
 
 	@RequestMapping("detailCus/{id}")
