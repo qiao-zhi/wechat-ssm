@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import cn.qs.utils.JSONResultUtil;
+import cn.qs.utils.format.ArithUtils;
 import cn.qs.utils.system.MySystemUtils;
 
 @RequestMapping("settings")
@@ -19,7 +20,8 @@ public class SettingsController {
 	public JSONResultUtil<Float> getProperty(String key) {
 		String propertyValue = MySystemUtils.getProperty(key);
 		float amount = NumberUtils.toFloat(propertyValue, 0);
-		return new JSONResultUtil<Float>(true, "ok", amount);
+		Float formatedAmount = ArithUtils.format(amount, 2);
+		return new JSONResultUtil<Float>(true, "ok", formatedAmount);
 	}
 
 	@RequestMapping("setProperty")

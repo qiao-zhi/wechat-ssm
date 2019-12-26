@@ -12,6 +12,7 @@ import cn.qs.bean.AbstractSequenceEntity;
  * @author QiaoLiQiang
  * @time 2019年12月11日下午10:25:30
  */
+// Remark1用作备注，用于标记使用优惠金额等信息
 @Entity
 public class Pay extends AbstractSequenceEntity {
 

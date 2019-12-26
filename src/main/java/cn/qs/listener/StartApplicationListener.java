@@ -1,7 +1,5 @@
 package cn.qs.listener;
 
-import java.util.Date;
-
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
@@ -12,9 +10,11 @@ import org.slf4j.LoggerFactory;
 
 import cn.qs.bean.user.User;
 import cn.qs.service.user.UserService;
+import cn.qs.utils.DefaultValue;
 import cn.qs.utils.ThreadUtils;
 import cn.qs.utils.system.MySystemUtils;
 import cn.qs.utils.system.SpringBootUtils;
+import cn.qs.utils.user.UserUtils;
 
 @WebListener
 public class StartApplicationListener implements ServletContextListener {
@@ -47,11 +47,15 @@ public class StartApplicationListener implements ServletContextListener {
 				if (findUserByUsername == null) {
 					User user = new User();
 					String adminPassword = DigestUtils.md5Hex("123456");
-					user.setPassword(adminPassword);
 					user.setUsername(adminUserName);
+					user.setPassword(adminPassword);
 					user.setFullname("系统管理员");
-					user.setCreatetime(new Date());
-					user.setRoles("系统管理员");
+					user.setSex("男");
+					user.setRoles(DefaultValue.ROLE_SYSYEM);
+
+					UserUtils.addDefaultWechatInfo(user);
+
+					user.setProperty("from", "system");
 
 					userService.add(user);
 					LOGGER.info("系统管理员创建成功");

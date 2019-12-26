@@ -32,7 +32,8 @@ public class MyNumberUtils {
 	}
 
 	public static void main(String[] args) {
-		System.out.println(toFixedDecimalWithPercent("1.525445544", 2));
+		float F2 = 105858.5328F;
+		System.out.println(ArithUtils.format(F2, 2));
 	}
 
 }

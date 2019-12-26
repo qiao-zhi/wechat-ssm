@@ -45,6 +45,8 @@ public class MySystemUtils {
 			} catch (IOException e) {
 				LOGGER.error("create settings.properties failed", e);
 			}
+		} else {
+			LOGGER.info("settings.properties exsisted, path: {}", propertiesFile.getAbsolutePath());
 		}
 	}
 

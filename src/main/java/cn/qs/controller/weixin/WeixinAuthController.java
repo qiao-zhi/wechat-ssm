@@ -9,6 +9,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -28,6 +29,7 @@ import cn.qs.utils.DefaultValue;
 import cn.qs.utils.HttpUtils;
 import cn.qs.utils.JSONResultUtil;
 import cn.qs.utils.securty.MD5Utils;
+import cn.qs.utils.system.MySystemUtils;
 import cn.qs.utils.weixin.WeixinConstants;
 import cn.qs.utils.weixin.WeixinInterfaceUtils;
 import cn.qs.utils.weixin.auth.WeixinJSAPISignUtils;
@@ -148,9 +150,11 @@ public class WeixinAuthController {
 			user.setUsername(openid);
 			user.setPassword(MD5Utils.md5(openid));
 			user.setFullname(wechatUser.getNickname());
-			user.setPhoto(wechatUser.getHeadimgurl());
-			user.setRoles("普通用户");
+			user.setWechatphoto(wechatUser.getHeadimgurl());
+			user.setRoles(DefaultValue.ROLE_PLAIN_USER);
 			user.setSex("1".equals(wechatUser.getSex()) ? "男" : "女");
+
+			user.setProperty("from", "wechat");
 
 			String address = "";
 			if (StringUtils.isNotBlank(wechatUser.getCountry())) {
@@ -162,11 +166,10 @@ public class WeixinAuthController {
 			if (StringUtils.isNotBlank(wechatUser.getCity())) {
 				address += wechatUser.getCity();
 			}
-			user.setRemark1(address);
+			user.setWechataddress(address);
 
-			if (StringUtils.isBlank(user.getRoles())) {
-				user.setRoles("普通用户");
-			}
+			// 设置第一次登陆的优惠金额
+			user.setCoupon(NumberUtils.toFloat(MySystemUtils.getProperty("coupon", "0")));
 
 			logger.debug("create user", user);
 			userService.add(user);

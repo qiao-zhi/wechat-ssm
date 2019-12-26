@@ -6,15 +6,14 @@ import javax.persistence.Entity;
 
 import cn.qs.bean.AbstractSequenceEntity;
 
-// remark1 用作地址
 @Entity
 public class User extends AbstractSequenceEntity {
 
 	private String username;
 
-	private String password;
-
 	private String fullname;
+
+	private String password;
 
 	private String sex;
 
@@ -28,7 +27,20 @@ public class User extends AbstractSequenceEntity {
 
 	private String userblank;
 
-	private String photo;
+	// 微信昵称
+	private String wechatnickname;
+
+	// 微信头像
+	private String wechatphoto;
+
+	// 微信地址
+	private String wechataddress;
+
+	// 孩子姓名(用于交费快速带入)
+	private String childrenname;
+
+	// 优惠金额(可以在付钱的时候使用)
+	private Float coupon;
 
 	public String getUsername() {
 		return username;
@@ -102,12 +114,44 @@ public class User extends AbstractSequenceEntity {
 		this.userblank = userblank == null ? null : userblank.trim();
 	}
 
-	public String getPhoto() {
-		return photo;
+	public String getWechatnickname() {
+		return wechatnickname;
 	}
 
-	public void setPhoto(String photo) {
-		this.photo = photo;
+	public void setWechatnickname(String wechatnickname) {
+		this.wechatnickname = wechatnickname;
+	}
+
+	public String getWechatphoto() {
+		return wechatphoto;
+	}
+
+	public void setWechatphoto(String wechatphoto) {
+		this.wechatphoto = wechatphoto;
+	}
+
+	public String getWechataddress() {
+		return wechataddress;
+	}
+
+	public void setWechataddress(String wechataddress) {
+		this.wechataddress = wechataddress;
+	}
+
+	public String getChildrenname() {
+		return childrenname;
+	}
+
+	public void setChildrenname(String childrenname) {
+		this.childrenname = childrenname;
+	}
+
+	public Float getCoupon() {
+		return coupon;
+	}
+
+	public void setCoupon(Float coupon) {
+		this.coupon = coupon;
 	}
 
 }

@@ -1,5 +1,8 @@
 package cn.qs.bean.user;
 
+import javax.persistence.MappedSuperclass;
+
+@MappedSuperclass
 public class WechatUser {
 
 	// openid
