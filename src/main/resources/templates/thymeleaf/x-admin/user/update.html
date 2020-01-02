@@ -95,6 +95,18 @@
 		      	th:checked="${user.roles eq '普通用户'}"/>
 		     </div>
           </div>
+          
+		  <div class="layui-form-item" th:if="${from} == 'admin'">
+              <label for="L_remark1" class="layui-form-label">
+                  	所属幼儿园
+              </label>
+             <div class="layui-input-block">
+				<select>
+				     <option >选择框</option>
+				     <option th:each="Kindergarten:${Kindergartens}" th:text="${Kindergarten['name']}" th:value="${Kindergarten['name']}" th:selected="${user.remark1 eq Kindergarten['name']}"></option>
+				</select>
+		     </div>
+          </div>
           <div class="layui-form-item">
               <label for="L_repass" class="layui-form-label">
               </label>

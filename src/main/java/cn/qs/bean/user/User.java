@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 
 import cn.qs.bean.AbstractSequenceEntity;
 
+// remark1 用作所属幼儿园
 @Entity
 public class User extends AbstractSequenceEntity {
 

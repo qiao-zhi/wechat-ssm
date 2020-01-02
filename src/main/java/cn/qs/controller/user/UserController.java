@@ -25,6 +25,7 @@ import cn.qs.bean.user.User;
 import cn.qs.controller.AbstractSequenceController;
 import cn.qs.service.BaseService;
 import cn.qs.service.user.UserService;
+import cn.qs.service.wechat.KindergartenService;
 import cn.qs.utils.DefaultValue;
 import cn.qs.utils.JSONResultUtil;
 import cn.qs.utils.securty.MD5Utils;
@@ -39,6 +40,9 @@ public class UserController extends AbstractSequenceController<User> {
 
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private KindergartenService KindergartenService;
 
 	public String getViewBasePath() {
 		return "user";
@@ -62,6 +66,9 @@ public class UserController extends AbstractSequenceController<User> {
 			map.addAttribute("from", "admin");
 		}
 
+		List<Map<String, Object>> Kindergartens = KindergartenService.listNamesAndIds();
+		map.addAttribute("Kindergartens", Kindergartens);
+		
 		User user = userService.findById(id);
 		map.addAttribute("user", user);
 

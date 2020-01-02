@@ -24,6 +24,8 @@ function showTable(pageInfo){
             +'<td>'+replaceNull(beans[i].phone)+'</td>'
             +'<td>'+replaceNull(beans[i].createtime)+'</td>'
             +'<td>'+replaceNull(beans[i].roles)+'</td>'
+            +'<td>'+replaceNull(beans[i].childrenname)+'</td>'
+            +'<td>'+replaceNull(beans[i].remark1)+'</td>'
             +'<td>';
         
         if (isAdmin()) {
