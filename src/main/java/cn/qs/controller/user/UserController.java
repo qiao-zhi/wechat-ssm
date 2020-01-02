@@ -40,7 +40,7 @@ public class UserController extends AbstractSequenceController<User> {
 
 	@Autowired
 	private UserService userService;
-	
+
 	@Autowired
 	private KindergartenService KindergartenService;
 
@@ -54,6 +54,9 @@ public class UserController extends AbstractSequenceController<User> {
 			map.addAttribute("from", from);
 		}
 
+		List<Map<String, Object>> kindergartens = KindergartenService.listNamesAndIds();
+		map.addAttribute("kindergartens", kindergartens);
+
 		return getViewPath("add");
 	}
 
@@ -66,9 +69,9 @@ public class UserController extends AbstractSequenceController<User> {
 			map.addAttribute("from", "admin");
 		}
 
-		List<Map<String, Object>> Kindergartens = KindergartenService.listNamesAndIds();
-		map.addAttribute("Kindergartens", Kindergartens);
-		
+		List<Map<String, Object>> kindergartens = KindergartenService.listNamesAndIds();
+		map.addAttribute("kindergartens", kindergartens);
+
 		User user = userService.findById(id);
 		map.addAttribute("user", user);
 

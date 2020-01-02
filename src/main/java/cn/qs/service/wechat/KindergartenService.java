@@ -10,4 +10,6 @@ public interface KindergartenService extends BaseSequenceService<Kindergarten> {
 
 	List<Map<String, Object>> listNamesAndIds();
 
+	Kindergarten findByName(String name);
+
 }

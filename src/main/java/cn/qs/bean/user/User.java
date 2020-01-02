@@ -6,7 +6,7 @@ import javax.persistence.Entity;
 
 import cn.qs.bean.AbstractSequenceEntity;
 
-// remark1 用作所属幼儿园
+// remark1 用作所属幼儿园(存的是幼儿园名称,修改幼儿园名称的时候要修改这里的remark1)
 @Entity
 public class User extends AbstractSequenceEntity {
 

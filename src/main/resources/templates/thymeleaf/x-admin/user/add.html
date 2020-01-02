@@ -93,6 +93,28 @@
 		     </div>
           </div>
           
+		  <div class="layui-form-item" th:if="${from} == 'admin'">
+              <label for="L_remark1" class="layui-form-label">
+                  	学生姓名
+              </label>
+             <div class="layui-input-block">
+                  <input type="text" id="L_phone" name="childrenname" lay-verify="required"
+                  autocomplete="off" class="layui-input"/>
+		     </div>
+          </div>
+          
+    	 <div class="layui-form-item" th:if="${from} == 'admin'">
+              <label for="L_remark1" class="layui-form-label">
+                  	所属幼儿园
+              </label>
+             <div class="layui-input-block">
+				<select name="remark1">
+				     <option value="">请选则幼儿园</option>
+				     <option th:each="Kindergarten:${kindergartens}" th:text="${Kindergarten['value']}" th:value="${Kindergarten['value']}"></option>
+				</select>
+		     </div>
+          </div>        
+          
           <div class="layui-form-item">
               <label for="L_repass" class="layui-form-label">
               </label>

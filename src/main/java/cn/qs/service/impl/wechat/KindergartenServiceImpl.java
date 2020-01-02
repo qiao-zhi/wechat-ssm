@@ -20,9 +20,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import cn.qs.bean.wechat.Kindergarten;
 import cn.qs.mapper.BaseMapper;
+import cn.qs.mapper.user.custom.UserCustomMapper;
 import cn.qs.mapper.wechat.KindergartenMapper;
 import cn.qs.service.impl.AbastractBaseSequenceServiceImpl;
 import cn.qs.service.wechat.KindergartenService;
+import cn.qs.utils.BeanUtils;
 
 @Service
 @Transactional
@@ -32,9 +34,31 @@ public class KindergartenServiceImpl extends AbastractBaseSequenceServiceImpl<Ki
 	@Autowired
 	private KindergartenMapper kindergartenMapper;
 
+	@Autowired
+	private UserCustomMapper userCustomMapper;
+
 	@Override
 	public BaseMapper<Kindergarten, Integer> getBaseMapper() {
 		return kindergartenMapper;
+	}
+
+	@Override
+	public void update(Kindergarten t) {
+		// 根据ID查询
+		Object propertyValue = BeanUtils.getProperty(t, "id");
+		Kindergarten systemBean = getBaseMapper().findOne((Integer) propertyValue);
+		if (systemBean != null) {
+			// 改了幼儿园名称的情况
+			if (!systemBean.getName().equals(t.getName())) {
+				userCustomMapper.updateRemark1(systemBean.getName(), t.getName());
+			}
+
+			BeanUtils.copyProperties(systemBean, t);
+		} else {
+			return;
+		}
+
+		getBaseMapper().save(systemBean);
 	}
 
 	@Override
@@ -51,7 +75,10 @@ public class KindergartenServiceImpl extends AbastractBaseSequenceServiceImpl<Ki
 
 			for (Kindergarten tmp : page.getContent()) {
 				tmpMap = new HashMap<>();
-				tmpMap.put("key", tmp.getId());
+				// tmpMap.put("key", tmp.getId());
+
+				// 直接使用幼儿园名称，所以这里key和value都返回幼儿园
+				tmpMap.put("key", tmp.getName());
 				tmpMap.put("value", tmp.getName());
 
 				result.add(tmpMap);
@@ -91,6 +118,11 @@ public class KindergartenServiceImpl extends AbastractBaseSequenceServiceImpl<Ki
 		}
 
 		return getBaseMapper().findAll(pageRequest);
+	}
+
+	@Override
+	public Kindergarten findByName(String name) {
+		return kindergartenMapper.findByName(name);
 	}
 
 }
