@@ -149,7 +149,7 @@ public class ExcelReader {
 		}
 
 		int lastRowNum = sheet.getLastRowNum();
-		for (int i = startRow; i < lastRowNum; i++) {
+		for (int i = startRow; i <= lastRowNum; i++) {
 			Row row = sheet.getRow(i);
 			if (row == null) {
 				continue;
