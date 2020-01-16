@@ -236,6 +236,8 @@ public class WXPayUtil {
 			sb.append("key=").append(key);
 		}
 
+		System.out.println("调用SB： " + sb);
+
 		if (SignType.MD5.equals(signType)) {
 			return MD5(sb.toString()).toUpperCase();
 		} else if (SignType.HMACSHA256.equals(signType)) {

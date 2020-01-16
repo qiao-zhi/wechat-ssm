@@ -149,11 +149,8 @@ public class WeixinAuthController {
 			User user = new User();
 			user.setUsername(openid);
 			user.setPassword(MD5Utils.md5(openid));
-			user.setFullname(wechatUser.getNickname());
-			user.setWechatphoto(wechatUser.getHeadimgurl());
 			user.setRoles(DefaultValue.ROLE_PLAIN_USER);
 			user.setSex("1".equals(wechatUser.getSex()) ? "男" : "女");
-
 			user.setProperty("from", "wechat");
 
 			String address = "";
@@ -167,6 +164,8 @@ public class WeixinAuthController {
 				address += wechatUser.getCity();
 			}
 			user.setWechataddress(address);
+			user.setWechatnickname(wechatUser.getNickname());
+			user.setWechatphoto(wechatUser.getHeadimgurl());
 
 			// 设置第一次登陆的优惠金额
 			user.setCoupon(NumberUtils.toFloat(MySystemUtils.getProperty("coupon", "0")));

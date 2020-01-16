@@ -11,23 +11,24 @@ import com.github.wxpay.sdk.WXPayConstants.SignType;
 import com.github.wxpay.sdk.WXPayUtil;
 
 import cn.qs.utils.HttpUtils;
+import cn.qs.utils.UUIDUtils;
 import cn.qs.utils.weixin.WeixinConstants;
 
 public class MyWxPayUtils {
 
 	public static void main(String[] args) throws Exception {
-		unifiedOrder();
+		orderquery();
 	}
 
 	private static void orderquery() throws Exception {
 		// 构造请求数据
 		Map<String, String> param = new LinkedHashMap<>();
 		// 商户订单号(根据商户订单号查询)
-		param.put("out_trade_no", "2");
+		param.put("out_trade_no", "1c21b2657b1c4264b12544f85b65b5c5");
 
 		// 构造配置信息
 		WXPayConfig wxPayConfig = new MyWxPayConfig();
-		WXPay wxPay = new WXPay(wxPayConfig, null, false, true);
+		WXPay wxPay = new WXPay(wxPayConfig, null, false, false);
 		Map<String, String> orders = wxPay.orderQuery(param);
 		System.out.println(orders);
 	}
@@ -70,11 +71,11 @@ public class MyWxPayUtils {
 		// 商品详情
 		param.put("attach", "附加信息");
 		// 商户订单号
-		param.put("out_trade_no", "4");
+		param.put("out_trade_no", UUIDUtils.getUUID2());
 		// 标价币种
 		param.put("fee_type", "CNY");
 		// 标价金额(单位为分)
-		param.put("total_fee", "101");
+		param.put("total_fee", "1");
 		// 终端IP
 		param.put("spbill_create_ip", "123.12.12.123");
 		// 交易起始时间
@@ -82,16 +83,20 @@ public class MyWxPayUtils {
 		// 交易结束时间
 		param.put("time_expire", "20201227091010");
 		// 通知地址
-		param.put("notify_url", "http://www.weixin.qq.com/wxpay/pay.php");
+		param.put("notify_url", WeixinConstants.PAY_SUCCESS_NOTIFY_URL);
 		// 交易类型
 		param.put("trade_type", "JSAPI");
 		// 商品ID
-		param.put("product_id", "123");
+		param.put("product_id", "3");
+
+		// openid(支付方式为JSAPI支付必传,用户标识)
+		param.put("openid", "o5uzSvo2VX6WEckzynm7sQymz0Zs");
 
 		// 构造配置信息
 		WXPayConfig wxPayConfig = new MyWxPayConfig();
-		WXPay wxPay = new WXPay(wxPayConfig, null, false, true);
+		WXPay wxPay = new WXPay(wxPayConfig, null, false, false);
 		Map<String, String> unifiedOrder = wxPay.unifiedOrder(param);
-		System.out.println(unifiedOrder);
+		System.out.println("param: " + param);
+		System.out.println("unifiedOrder: " + unifiedOrder);
 	}
 }

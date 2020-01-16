@@ -2,21 +2,39 @@ package cn.qs.bean.user;
 
 import javax.persistence.MappedSuperclass;
 
+/**
+ * 微信授权获取到的用户信息
+ * 
+ * @author Administrator
+ *
+ */
 @MappedSuperclass
 public class WechatUser {
 
 	// openid
 	private String openid;
+
+	/**
+	 * 昵称
+	 */
 	private String nickname;
 	// 1 男; 0女
 	private String sex;
+
 	private String language;
+
 	// 西城
 	private String city;
+
 	// 北京
 	private String province;
+
 	// 中国
 	private String country;
+
+	/**
+	 * 头像地址
+	 */
 	private String headimgurl;
 
 	public String getOpenid() {

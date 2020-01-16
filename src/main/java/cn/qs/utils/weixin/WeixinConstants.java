@@ -20,4 +20,7 @@ public class WeixinConstants {
 
 	public static String ROLE_PLAIN_REDIRECTURL = PropertiesFileUtils.getPropertyValue("application.properties",
 			"ROLE_PLAIN_REDIRECTURL");
+
+	public static String PAY_SUCCESS_NOTIFY_URL = PropertiesFileUtils.getPropertyValue("application.properties",
+			"PAY_SUCCESS_NOTIFY_URL");
 }
