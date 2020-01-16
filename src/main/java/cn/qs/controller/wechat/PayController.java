@@ -1,8 +1,16 @@
 package cn.qs.controller.wechat;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Date;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +27,11 @@ import cn.qs.service.BaseService;
 import cn.qs.service.user.UserService;
 import cn.qs.service.wechat.PayService;
 import cn.qs.utils.JSONResultUtil;
+import cn.qs.utils.UUIDUtils;
 import cn.qs.utils.format.ArithUtils;
 import cn.qs.utils.system.MySystemUtils;
+import cn.qs.utils.weixin.pay.WeixinPayUtils;
+import cn.qs.utils.weixin.pay.WxPayXmlUtil;
 
 @Controller
 @RequestMapping("pay")
@@ -45,15 +56,16 @@ public class PayController extends AbstractSequenceController<Pay> {
 	}
 
 	/**
-	 * JSON形式的数据
+	 * 统一下订单
 	 * 
 	 * @param user
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping("doAddJSON")
+	@RequestMapping("unifiedOrder")
 	@ResponseBody
-	public JSONResultUtil<Pay> doAddJSON(@RequestBody Pay pay) {
+	public JSONResultUtil<Map<String, String>> unifiedOrder(@RequestBody Pay pay) {
+		// 1.创建系统信息
 		pay.setPayDate(new Date());
 		pay.setUserId(MySystemUtils.getLoginUser().getId());
 		pay.setUsername(MySystemUtils.getLoginUser().getUsername());
@@ -61,9 +73,10 @@ public class PayController extends AbstractSequenceController<Pay> {
 		String loginUsername = MySystemUtils.getLoginUsername();
 		User findUserByUsername = userService.findUserByUsername(loginUsername);
 		Float coupon = ArithUtils.format(findUserByUsername.getCoupon(), 2);
+		Float actuallyPay = pay.getPayAmount();
 		if (coupon != null && coupon != 0 && coupon < pay.getPayAmount()) {
 			Float shouldPay = ArithUtils.format(pay.getPayAmount(), 2);
-			Float actuallyPay = ArithUtils.sub(shouldPay, coupon);
+			actuallyPay = ArithUtils.sub(shouldPay, coupon);
 			pay.setPayAmount(actuallyPay);
 			pay.setRemark1("应收金额: " + shouldPay + ",实收金额: " + actuallyPay + ", 第一次付费减金额： " + coupon);
 
@@ -76,8 +89,19 @@ public class PayController extends AbstractSequenceController<Pay> {
 			logger.info("没有优惠金额");
 		}
 
+		String orderId = UUIDUtils.getUUID2();
+		pay.setOrderId(orderId);
+		pay.setOrderStatus("未支付");
+
 		payService.add(pay);
-		return new JSONResultUtil<Pay>(true, "ok", pay);
+
+		// 2.创建订单==用于JSAPI发起支付
+		String orderName = pay.getChildrenName() + "在幼儿园 " + pay.getKindergartenName() + "支付学费";
+		Map<String, String> unifiedOrder = WeixinPayUtils.unifiedOrder(orderId, orderName, actuallyPay,
+				MySystemUtils.getLoginUser().getUsername());
+		unifiedOrder.put("payId", pay.getId() + "");
+
+		return new JSONResultUtil<Map<String, String>>(true, "ok", unifiedOrder);
 	}
 
 	@RequestMapping("detailCus/{id}")
@@ -86,6 +110,56 @@ public class PayController extends AbstractSequenceController<Pay> {
 		Map<String, Object> result = payService.detail(id);
 
 		return new JSONResultUtil<>(true, "", result);
+	}
+
+	/**
+	 * 微信成功回调地址
+	 * 
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 */
+	@RequestMapping("/paySuccess")
+	public void paySuccess(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		try {
+			InputStream inStream = request.getInputStream();
+			int _buffer_size = 1024;
+			if (inStream != null) {
+				ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+				byte[] tempBytes = new byte[_buffer_size];
+				int count = -1;
+				while ((count = inStream.read(tempBytes, 0, _buffer_size)) != -1) {
+					outStream.write(tempBytes, 0, count);
+				}
+				tempBytes = null;
+				outStream.flush();
+				// 将流转换成字符串
+				String result = new String(outStream.toByteArray(), "UTF-8");
+
+				// 转换为Map处理自己的业务逻辑，这里将订单状态改为已支付
+				if (StringUtils.isNotBlank(result)) {
+					Map<String, String> xmlToMap = WxPayXmlUtil.xmlToMap(result);
+					if ("SUCCESS".equals(MapUtils.getString(xmlToMap, "result_code", ""))) {
+						String orderId = MapUtils.getString(xmlToMap, "out_trade_no", "");
+						Pay systemPay = payService.findByOrderId(orderId);
+						if (systemPay != null && systemPay.getOrderStatus() != "已支付") {
+							systemPay.setOrderStatus("已支付");
+							logger.info("修改订单状态为已支付, orderId: {} ", orderId);
+							payService.update(systemPay);
+						}
+					}
+				}
+			}
+
+			// 通知微信支付系统接收到信息
+			response.getWriter().write(
+					"<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>");
+		} catch (Exception e) {
+			logger.error("paySuccess error", e);
+
+			// 如果失败返回错误，微信会再次发送支付信息
+			response.getWriter().write("fail");
+		}
 	}
 
 }

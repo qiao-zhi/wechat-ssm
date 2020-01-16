@@ -5,4 +5,5 @@ import cn.qs.mapper.BaseSequenceMapper;
 
 public interface PayMapper extends BaseSequenceMapper<Pay> {
 
+	Pay findByOrderId(String orderId);
 }

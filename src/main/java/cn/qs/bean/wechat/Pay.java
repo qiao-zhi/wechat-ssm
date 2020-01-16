@@ -77,6 +77,16 @@ public class Pay extends AbstractSequenceEntity {
 	 */
 	private String qrcodePath;
 
+	/**
+	 * 发送到微信平台的orderId，对应微信平台out_trade_no参数
+	 */
+	private String orderId;
+
+	/**
+	 * 订单状态：未支付、已支付
+	 */
+	private String orderStatus;
+
 	public Integer getKindergartenId() {
 		return kindergartenId;
 	}
@@ -189,15 +199,29 @@ public class Pay extends AbstractSequenceEntity {
 		this.childrenName = childrenName;
 	}
 
+	public String getOrderId() {
+		return orderId;
+	}
+
+	public void setOrderId(String orderId) {
+		this.orderId = orderId;
+	}
+
+	public String getOrderStatus() {
+		return orderStatus;
+	}
+
+	public void setOrderStatus(String orderStatus) {
+		this.orderStatus = orderStatus;
+	}
+
 	@Override
 	public String toString() {
 		return "Pay [kindergartenId=" + kindergartenId + ", kindergartenName=" + kindergartenName + ", userId=" + userId
 				+ ", username=" + username + ", semester=" + semester + ", payDate=" + payDate + ", parentName="
 				+ parentName + ", parentPhone=" + parentPhone + ", childrenName=" + childrenName + ", grade=" + grade
 				+ ", classNum=" + classNum + ", address=" + address + ", payAmount=" + payAmount + ", qrcodePath="
-				+ qrcodePath + ", id=" + id + ", creator=" + creator + ", createtime=" + createtime + ", remark1="
-				+ remark1 + ", remark2=" + remark2 + ", remark3=" + remark3 + ", properties=" + properties
-				+ ", propertiesMap=" + propertiesMap + "]";
+				+ qrcodePath + ", orderId=" + orderId + ", orderStatus=" + orderStatus + "]";
 	}
 
 }

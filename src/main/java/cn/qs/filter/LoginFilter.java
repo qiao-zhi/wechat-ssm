@@ -42,7 +42,8 @@ public class LoginFilter implements Filter {
 		String path = req.getRequestURI();
 		// 如果包含login或者访问静态资源就放行
 		if (StringUtils.containsIgnoreCase(path, "login") || path.contains("/static/") || path.contains("/mobile/")
-				|| path.contains("doAddUser") || path.contains("/weixin/") || path.contains("/weixinauth/")) {
+				|| path.contains("doAddUser") || path.contains("/weixin/") || path.contains("paySuccess")
+				|| path.contains("/weixinauth/")) {
 
 			chain.doFilter(request, response); // 放行
 			return;

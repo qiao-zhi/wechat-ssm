@@ -9,4 +9,6 @@ public interface PayService extends BaseSequenceService<Pay> {
 
 	Map<String, Object> detail(Integer id);
 
+	Pay findByOrderId(String orderId);
+
 }

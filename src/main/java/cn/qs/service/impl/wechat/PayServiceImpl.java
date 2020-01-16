@@ -52,4 +52,9 @@ public class PayServiceImpl extends AbastractBaseSequenceServiceImpl<Pay> implem
 		condition.put("creator", MySystemUtils.getLoginUser().getUsername());
 		return payCustomMapper.listByConditionByCreator(condition);
 	}
+
+	@Override
+	public Pay findByOrderId(String orderId) {
+		return payMapper.findByOrderId(orderId);
+	}
 }

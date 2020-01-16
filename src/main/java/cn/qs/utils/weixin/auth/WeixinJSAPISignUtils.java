@@ -33,7 +33,7 @@ public class WeixinJSAPISignUtils {
 	public static Map<String, String> sign(String jsapiTicket, String url) {
 		Map<String, String> ret = new HashMap<String, String>();
 		String nonce_str = create_nonce_str();
-		String timestamp = create_timestamp();
+		String timestamp = getTimestamp();
 		String signatureString;
 		String signature = "";
 
@@ -75,7 +75,7 @@ public class WeixinJSAPISignUtils {
 		return UUID.randomUUID().toString();
 	}
 
-	private static String create_timestamp() {
+	public static String getTimestamp() {
 		return Long.toString(System.currentTimeMillis() / 1000);
 	}
 }
