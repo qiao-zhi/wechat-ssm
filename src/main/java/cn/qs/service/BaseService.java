@@ -26,8 +26,8 @@ public interface BaseService<T, E extends Serializable> {
 
 	T findById(E id);
 
-	List<T> listByCondition(Map condition);
+	List<T> listByCondition(Map<String, Object> condition);
 
-	Page<T> pageByCondition(Map condition);
+	Page<T> pageByCondition(Map<String, Object> condition);
 
 }

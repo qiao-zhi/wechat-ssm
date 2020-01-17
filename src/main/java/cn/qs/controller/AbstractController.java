@@ -23,7 +23,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 
-import cn.qs.bean.user.User;
 import cn.qs.service.BaseService;
 import cn.qs.utils.DefaultValue;
 import cn.qs.utils.JSONResultUtil;
@@ -80,7 +79,7 @@ public abstract class AbstractController<T, E extends Serializable> {
 	}
 
 	/**
-	 * SpringDataJPA分页
+	 * SpringDataJPA分页(接收普通参数返回page对象)
 	 * 
 	 * @param condition
 	 * @param request
@@ -114,7 +113,7 @@ public abstract class AbstractController<T, E extends Serializable> {
 	}
 
 	/**
-	 * SpringDataJPA分页(返回JSON信息，封装到工具类中)
+	 * SpringDataJPA分页(接收JSON参数，返回JSON信息，封装到工具类中)
 	 * 
 	 * @param condition
 	 * @param request
@@ -148,7 +147,7 @@ public abstract class AbstractController<T, E extends Serializable> {
 	}
 
 	/**
-	 * mybatis分页(交由有需要的子类复写)
+	 * mybatis分页(接收JSON参数，返回JSON工具类对象)
 	 * 
 	 * @param condition
 	 * @param request
@@ -180,16 +179,35 @@ public abstract class AbstractController<T, E extends Serializable> {
 	}
 
 	/**
-	 * mybatis分页(交由有需要的子类复写)
+	 * mybatis分页(接收普通表单参数，返回PageInfo对象)
 	 * 
-	 * @param condition
+	 * @param condition(参数是JSON形式数据)
 	 * @param request
 	 * @return
 	 */
 	@RequestMapping("page2")
 	@ResponseBody
-	public PageInfo<T> page2(@RequestParam Map condition, HttpServletRequest request) {
-		return null;
+	public PageInfo<T> page2(@RequestParam Map<String, Object> condition, HttpServletRequest request) {
+		int pageNum = 1;
+		if (StringUtils.isNotBlank(MapUtils.getString(condition, "pageNum"))) { // 如果不为空的话改变当前页号
+			pageNum = MapUtils.getInteger(condition, "pageNum");
+		}
+		int pageSize = DefaultValue.PAGE_SIZE;
+		if (StringUtils.isNotBlank(MapUtils.getString(condition, "pageSize"))) { // 如果不为空的话改变当前页大小
+			pageSize = MapUtils.getInteger(condition, "pageSize");
+		}
+
+		// 开始分页
+		PageHelper.startPage(pageNum, pageSize);
+		List<T> beans = new ArrayList<T>();
+		try {
+			beans = getBaseService().listByCondition(condition);
+		} catch (Exception e) {
+			LOGGER.error("getUsers error！", e);
+		}
+
+		PageInfo<T> pageInfo = new PageInfo<T>(beans);
+		return pageInfo;
 	}
 
 	@RequestMapping("delete")
@@ -230,5 +248,5 @@ public abstract class AbstractController<T, E extends Serializable> {
 		map.addAttribute("bean", bean);
 		return getViewPath("detail");
 	}
-
+	
 }

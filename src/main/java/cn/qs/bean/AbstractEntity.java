@@ -51,6 +51,7 @@ public class AbstractEntity {
 		this.createtime = new Date();
 		creator = UserContext.get() == null ? "" : UserContext.get().getUsername();
 		propertiesMap = new LinkedHashMap<>();
+
 		if (StringUtils.isNotBlank(properties)) {
 			propertiesMap = JSONObject.parseObject(properties, LinkedHashMap.class);
 		}
@@ -100,8 +101,20 @@ public class AbstractEntity {
 		return properties;
 	}
 
+	public void setProperties(String properties) {
+		this.properties = properties;
+
+		if (StringUtils.isNotBlank(properties)) {
+			propertiesMap = JSONObject.parseObject(properties, LinkedHashMap.class);
+		}
+	}
+
 	public Map<String, Object> getPropertiesMap() {
 		return propertiesMap;
+	}
+
+	public void setPropertiesMap(Map<String, Object> propertiesMap) {
+		this.propertiesMap = propertiesMap;
 	}
 
 	public void setProperty(String key, Object value) {

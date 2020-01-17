@@ -39,18 +39,13 @@ public class PayServiceImpl extends AbastractBaseSequenceServiceImpl<Pay> implem
 	}
 
 	@Override
-	public List<Pay> listByCondition(Map condition) {
+	public List<Pay> listByCondition(Map<String, Object> condition) {
 		// 普通用户只能查自己创建的
-		if (DefaultValue.ROLE_SYSYEM.equals(MySystemUtils.getLoginUser().getRoles())) {
-			if (StringUtils.isNotBlank(MapUtils.getString(condition, "keywords"))) {
-				return payCustomMapper.listByCondition(condition);
-			}
-
-			return payMapper.findAll();
+		if (!DefaultValue.ROLE_SYSYEM.equals(MySystemUtils.getLoginUser().getRoles())) {
+			condition.put("creator", MySystemUtils.getLoginUser().getUsername());
 		}
 
-		condition.put("creator", MySystemUtils.getLoginUser().getUsername());
-		return payCustomMapper.listByConditionByCreator(condition);
+		return payCustomMapper.listByCondition(condition);
 	}
 
 	@Override

@@ -63,7 +63,7 @@ public abstract class AbastractBaseServiceImpl<T, E extends Serializable> implem
 	 * Mybatis专用的分页查询，子类可以重写
 	 */
 	@Override
-	public List<T> listByCondition(Map condition) {
+	public List<T> listByCondition(Map<String, Object> condition) {
 		return null;
 	}
 

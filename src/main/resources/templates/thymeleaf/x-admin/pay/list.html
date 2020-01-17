@@ -17,7 +17,7 @@
     
     <!--自己写的JS  -->
     <script type="text/javascript" th:src="${#httpServletRequest.getContextPath()+'/static/x-admin/MyJs/PublicFunctions.js'}"></script>
-    <script type="text/javascript" th:src="${#httpServletRequest.getContextPath()+'/static/x-admin/MyJs/kindergarten.js'}"></script>
+    <script type="text/javascript" th:src="${#httpServletRequest.getContextPath()+'/static/x-admin/MyJs/pay.js'}"></script>
     
     <span th:if="${session.user.roles} eq '系统管理员'">
     	<script>
@@ -43,29 +43,46 @@
           <!--隐藏当前页和页号-->
           <input type="hidden" name="pageNum"/>
           <input type="hidden" name="pageSize"/>
-<!--           <input type="text" name="username"  placeholder="请输入用户名" autocomplete="off" class="layui-input"/>
-          <button class="layui-btn" type="button" onclick="queryUsersFY()"><i class="layui-icon">&#xe615;</i></button>
-          <button class="layui-btn layui-btn-normal" type="button" onclick='clearQueryCondition(this)' title="点击重置查询条件"><i class="layui-icon">&#xe639;</i></button>
-           -->
+          
+          <div class="layui-inline">
+	          <input type="text" name="kindergartenName"  placeholder="请输入幼儿园名称" autocomplete="off" class="layui-input"/>
+	          <input type="text" name="childrenName"  placeholder="请输入学生姓名" autocomplete="off" class="layui-input"/>
+	          <input type="text" name="parentName"  placeholder="请输入家长姓名" autocomplete="off" class="layui-input"/>
+    	  </div>
+    	  
+          <div class="layui-inline">
+          	<select name="orderStatus" lay-verify="">
+			  <option value="">请选择订单状态</option>
+			  <option value="未支付">未支付</option>
+			  <option value="已支付" selected="selected">已支付</option>
+			</select>  
+    	  </div>    
+    	    
+    	  <div class="layui-inline">
+	          <button class="layui-btn" type="button" onclick="queryFY()"><i class="layui-icon">&#xe615;</i></button>
+	          <button class="layui-btn layui-btn-normal" type="button" onclick='clearQueryCondition(this)' title="点击重置查询条件"><i class="layui-icon">&#xe639;</i></button>
+    	  </div>
         </form>
       </div>
       <xblock th:if="${session.user.roles} eq '系统管理员'">
      	 <span>
-       		 <button class="layui-btn" onclick="x_admin_show('添加','./add.html',600,400)"><i class="layui-icon"></i>添加</button>
+       		 <button class="layui-btn" onclick="exportExcel('queryForm', '/pay/export.html')"><i class="layui-icon"></i>导出</button>
         </span>
-        <span class="x-right" style="line-height:40px">幼儿园列表</span>
+        <span class="x-right" style="line-height:40px">订单列表</span>
       </xblock>
       <table class="layui-table">
         <thead>
           <tr>
             <th>序号</th>
-            <th>id</th>
-            <th>名称</th>
-            <th>版本号</th>
-            <th>服务商</th>
-            <th>地址</th>
+            <th>幼儿园</th>
+            <th>学生</th>
+            <th>家长</th>
+            <th>家长电话</th>
+            <th>缴费日期</th>
             <th>缴费金额</th>
-            <th>操作</th>
+            <th>备注</th>
+            <th>订单编号</th>
+            <th>订单状态</th>
            </tr>
         </thead>
         <tbody id="tbody">
@@ -79,3 +96,9 @@
     </div>
   </body>
 </html>
+<script>
+layui.use('form', function(){
+  var form = layui.form; //只有执行了这一步，部分表单元素才会自动修饰成功
+  form.render();
+});
+</script>

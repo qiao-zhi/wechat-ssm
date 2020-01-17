@@ -76,6 +76,16 @@ public class MySystemUtils {
 		return user;
 	}
 
+	/**
+	 * 是否是微信登录(微信账号)
+	 * 
+	 * @return
+	 */
+	public static boolean isWXLogin() {
+		Object property = getLoginUser().getProperty("from");
+		return "wechat".equals(property);
+	}
+
 	public static User getLoginUser(HttpServletRequest request) {
 		User user = (User) request.getSession().getAttribute("user");
 		return user;
