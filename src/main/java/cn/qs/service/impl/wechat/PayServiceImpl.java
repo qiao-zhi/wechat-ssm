@@ -52,4 +52,14 @@ public class PayServiceImpl extends AbastractBaseSequenceServiceImpl<Pay> implem
 	public Pay findByOrderId(String orderId) {
 		return payMapper.findByOrderId(orderId);
 	}
+
+	@Override
+	public List<Map<String, Object>> listMap(Map<String, Object> condition) {
+		// 普通用户只能查自己创建的
+		if (!DefaultValue.ROLE_SYSYEM.equals(MySystemUtils.getLoginUser().getRoles())) {
+			condition.put("creator", MySystemUtils.getLoginUser().getUsername());
+		}
+
+		return payCustomMapper.listMap(condition);
+	}
 }

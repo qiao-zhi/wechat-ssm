@@ -22,4 +22,6 @@ public interface PayCustomMapper {
 	 */
 	List<Pay> listByCondition(Map condition);
 
+	List<Map<String, Object>> listMap(Map<String, Object> condition);
+
 }

@@ -1,4 +1,4 @@
-var pageUrl = "/pay/page2.html";
+var pageUrl = "/pay/page2Custom.html";
 var updateUrl = "/kindergarten/update.html";
 
 $(function(){
@@ -22,6 +22,7 @@ function showTable(pageInfo) {
             +'<td>'+index+'</td>'
             +'<td>'+replaceNull(beans[i].kindergartenName)+'</td>'
             +'<td>'+replaceNull(beans[i].childrenName)+'</td>'
+            +'<td>'+replaceNull(beans[i].wechataddress)+'</td>'
             +'<td>'+replaceNull(beans[i].parentName)+'</td>'
             +'<td>'+replaceNull(beans[i].parentPhone)+'</td>'
             +'<td>'+replaceNull(beans[i].payDate)+'</td>'

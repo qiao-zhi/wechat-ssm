@@ -30,6 +30,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+
 import cn.qs.bean.user.User;
 import cn.qs.bean.wechat.Pay;
 import cn.qs.controller.AbstractSequenceController;
@@ -37,6 +40,7 @@ import cn.qs.service.BaseService;
 import cn.qs.service.user.UserService;
 import cn.qs.service.wechat.PayService;
 import cn.qs.utils.BeanUtils;
+import cn.qs.utils.DefaultValue;
 import cn.qs.utils.JSONResultUtil;
 import cn.qs.utils.UUIDUtils;
 import cn.qs.utils.export.ExcelExporter;
@@ -123,6 +127,27 @@ public class PayController extends AbstractSequenceController<Pay> {
 		return new JSONResultUtil<Map<String, String>>(true, "ok", unifiedOrder);
 	}
 
+	@RequestMapping("page2Custom")
+	@ResponseBody
+	public PageInfo<Map<String, Object>> page2Custom(@RequestParam Map<String, Object> condition,
+			HttpServletRequest request) {
+		int pageNum = 1;
+		if (StringUtils.isNotBlank(MapUtils.getString(condition, "pageNum"))) { // 如果不为空的话改变当前页号
+			pageNum = MapUtils.getInteger(condition, "pageNum");
+		}
+		int pageSize = DefaultValue.PAGE_SIZE;
+		if (StringUtils.isNotBlank(MapUtils.getString(condition, "pageSize"))) { // 如果不为空的话改变当前页大小
+			pageSize = MapUtils.getInteger(condition, "pageSize");
+		}
+
+		// 开始分页
+		PageHelper.startPage(pageNum, pageSize);
+		List<Map<String, Object>> beans = payService.listMap(condition);
+
+		PageInfo<Map<String, Object>> pageInfo = new PageInfo<>(beans);
+		return pageInfo;
+	}
+
 	@RequestMapping("detailCus/{id}")
 	@ResponseBody
 	public JSONResultUtil<Map<String, Object>> detailCus(@PathVariable() Integer id) {
@@ -135,8 +160,7 @@ public class PayController extends AbstractSequenceController<Pay> {
 	public void export(HttpServletRequest request, HttpServletResponse response, @RequestParam Map condition)
 			throws Exception {
 
-		List<Pay> beans = getBaseService().listByCondition(condition);
-		List<Map<String, Object>> datas = BeanUtils.beansToMaps(beans, true);
+		List<Map<String, Object>> datas = payService.listMap(condition);
 
 		// 处理日期
 		if (CollectionUtils.isNotEmpty(datas)) {
@@ -149,12 +173,13 @@ public class PayController extends AbstractSequenceController<Pay> {
 		}
 
 		// 写入文件中
-		String[] headerNames = new String[] { "幼儿园", "学生", "年级", "班级", "学期", "家长", "家长电话", "缴费日期", "缴费金额", "备注", "订单编号",
-				"订单状态" };
+		String[] headerNames = new String[] { "幼儿园", "学生", "年级", "班级", "学期", "家长", "家长电话", "地址", "缴费日期", "缴费金额", "备注",
+				"订单编号", "订单状态" };
 		ExcelExporter hssfWorkExcel = new ExcelExporter(headerNames, "日报表", OfficeVersion.OFFICE_03);
 
 		String[] keys = new String[] { "kindergartenName", "childrenName", "grade", "classNum", "semester",
-				"parentName", "parentPhone", "payDateStr", "payAmount", "remark1", "orderId", "orderStatus" };
+				"parentName", "parentPhone", "wechataddress", "payDateStr", "payAmount", "remark1", "orderId",
+				"orderStatus" };
 		hssfWorkExcel.createTableRows(datas, keys);
 
 		File tmpFile = MySystemUtils.getTmpFile();

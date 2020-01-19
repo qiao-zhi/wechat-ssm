@@ -2,9 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="cn.qs.mapper.wechat.custom.PayCustomMapper">
 
-	<select id="listByCondition" parameterType="map"
-		resultType="cn.qs.bean.wechat.Pay">
-		select * from pay
+	<sql id="queryWhere">
 		<where>
 			<if test="kindergartenName != null and kindergartenName != ''">
 				and kindergartenName like '%${kindergartenName}%'
@@ -22,12 +20,25 @@
 				and orderStatus = #{orderStatus}
 			</if>
 			<if test="keywords != null and keywords != ''">
-				and kindergartenName like '%${keywords}%' and
-				childrenName like
-				'%${keywords}%' and parentName like
+				and kindergartenName like '%${keywords}%' or
+				childrenName
+				like
+				'%${keywords}%' or parentName like
 				'%${keywords}%'
 			</if>
 		</where>
+	</sql>
+
+	<select id="listByCondition" parameterType="map"
+		resultType="cn.qs.bean.wechat.Pay">
+		select * from pay
+		<include refid="queryWhere"></include>
+	</select>
+
+	<select id="listMap" parameterType="map" resultType="map">
+		select p.*, u.wechataddress from pay p left join user u on p.creator =
+		u.username
+		<include refid="queryWhere"></include>
 	</select>
 
 </mapper>
