@@ -84,7 +84,7 @@ public class WeixinInterfaceUtils {
 	private static String jsapiTicket;
 
 	/**
-	 * 最后一次获取Access_Token的时间
+	 * 最后一次获取JsapiTicket的时间
 	 */
 	private static Date lastGetJsapiTicketTime;
 
@@ -123,10 +123,5 @@ public class WeixinInterfaceUtils {
 		}
 
 		return false;
-	}
-
-	public static void main(String[] args) {
-		String jsapiTicketn = getJsapiTicket();
-		System.out.println(jsapiTicketn);
 	}
 }
